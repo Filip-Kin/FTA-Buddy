@@ -1,5 +1,7 @@
 package com.filipkin.ftahelper.ui.monitor;
 
+import com.filipkin.ftahelper.util.TeamState;
+
 public class FieldState {
     public int field = 0;
     public int match = 0;
@@ -12,14 +14,3 @@ public class FieldState {
     public TeamState red3 = new TeamState() {};
 }
 
-class TeamState {
-    public int number = 0;
-    public int ds = 0;
-    public int radio = 0;
-    public int rio = 0;
-    public int code = 0;
-    public double bwu = 0;
-    public double battery = 0;
-    public int ping = 0;
-    public int packets = 0;
-}

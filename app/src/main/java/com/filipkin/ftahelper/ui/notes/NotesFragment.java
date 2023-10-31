@@ -106,13 +106,7 @@ public class NotesFragment extends DialogFragment {
         // Update team list in selector from live data
         @SuppressLint("SetTextI18n")
         final Observer<ArrayList<String>> teamsObserver = newTeams -> {
-            newTeams.sort(new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    // Pad numbers with zeros so 33 is before 1684
-                    return (String.format("%1$4s", o1).replace(' ', '0')).compareTo(String.format("%1$4s", o2).replace(' ', '0'));
-                }
-            });
+            newTeams.sort(Comparator.comparing(o -> (String.format("%1$4s", o).replace(' ', '0'))));
             Spinner spinner = binding.teamSelector;
             spinner.setAdapter(new ArrayAdapter<>(root.getContext(),  android.R.layout.simple_spinner_dropdown_item, newTeams));
             if (newTeams.contains(currentlySelectedTeam)) {
@@ -182,9 +176,7 @@ public class NotesFragment extends DialogFragment {
 
             builder.setTitle("Notes Settings")
                     .setMessage("Current profile: "+profileName+" (id: "+profileNumber+")")
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        dialog.cancel();
-                    }).setNegativeButton("Logout", (dialog, which) -> {
+                    .setPositiveButton("OK", (dialog, which) -> dialog.cancel()).setNegativeButton("Logout", (dialog, which) -> {
                         profileNumber = -1;
                         profileName = null;
                         sharedPreferences.edit().remove("profileNumber").remove("profileName").apply();
@@ -210,7 +202,7 @@ public class NotesFragment extends DialogFragment {
             binding.messageContainer.addView(textView);
         }
         ScrollView scrollView = binding.messageContainerScroll;
-        scrollView.postDelayed((Runnable) () -> scrollView.smoothScrollTo(0, binding.messageContainerScroll.getHeight() + 72),250);
+        scrollView.postDelayed(() -> scrollView.smoothScrollTo(0, binding.messageContainerScroll.getHeight() + 72),250);
     }
 
     private TextView getMessageTextView(JSONObject msg) {
@@ -279,9 +271,7 @@ public class NotesFragment extends DialogFragment {
         // Build dialog
         builder.setMessage(R.string.notes_login_dialog)
                 .setView(usernameInput)
-                .setPositiveButton("OK", (dialog, which) -> {
-                    registerUsername(usernameInput);
-                });
+                .setPositiveButton("OK", (dialog, which) -> registerUsername(usernameInput));
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             binding.notesMessage.setEnabled(false);
             binding.sendButton.setEnabled(false);
@@ -372,7 +362,7 @@ public class NotesFragment extends DialogFragment {
                     for (int i = 0; i < jsonMessages.length(); i++) {
                         messages.add(jsonMessages.getJSONObject(i));
                     }
-                    messages.sort((Comparator<JSONObject>) (o1, o2) -> {
+                    messages.sort((o1, o2) -> {
                         try {
                             return o1.getString("created").compareTo(o2.getString("created"));
                         } catch (JSONException e) {
