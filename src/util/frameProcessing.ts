@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { DSState, FieldState, MonitorFrame, PartialMonitorFrame, ROBOT, StateChange, StateChangeType, TeamInfo } from "../../shared/types";
+import { DSState, FieldState, MonitorFrame, PartialMonitorFrame, ROBOT, StateChange, StateChangeType, TeamInfo, TeamWarnings } from "../../shared/types";
 import { db } from "../db/db";
 import { events } from "../db/schema";
 import { getEvent } from "./get-event";
@@ -10,6 +10,9 @@ export function detectStatusChange(currentFrame: PartialMonitorFrame, previousFr
     for (let _robot in ROBOT) {
         const robot = _robot as ROBOT;
         const currentRobot = (currentFrame[robot as keyof MonitorFrame] as TeamInfo);
+
+        currentRobot.warnings = [];
+
         if (previousFrame) {
             const previousRobot = (previousFrame[robot as keyof MonitorFrame] as TeamInfo);
 
@@ -67,4 +70,21 @@ export async function processFrameForTeamData(eventCode: string, frame: MonitorF
     }
 
     return false;
+}
+
+export async function processTeamWarnings(eventCode: string, frame: MonitorFrame) {
+    const event = await getEvent('', eventCode);
+
+    for (let station in ROBOT) {
+        let team = frame[station as keyof MonitorFrame] as TeamInfo;
+        if (!event.checklist[team.number]) continue;
+        if (!event.checklist[team.number].inspected) {
+            team.warnings.push(TeamWarnings.NOT_INSPECTED);
+        }
+        if (!event.checklist[team.number].radioProgrammed) {
+            team.warnings.push(TeamWarnings.RADIO_NOT_FLASHED);
+        }
+    }
+
+    return frame;
 }

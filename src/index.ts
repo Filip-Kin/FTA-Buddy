@@ -14,6 +14,7 @@ import { fieldMonitorRouter } from './router/field-monitor';
 import { matchRouter } from './router/logs';
 import { userRouter } from './router/user';
 import { createContext, router } from './trpc';
+import { cycleRouter } from './router/cycles';
 
 const port = parseInt(process.env.PORT || '3000');
 
@@ -26,7 +27,8 @@ const appRouter = router({
     event: eventRouter,
     match: matchRouter,
     checklist: checklistRouter,
-    field: fieldMonitorRouter
+    field: fieldMonitorRouter,
+    cycles: cycleRouter
 });
 
 createHTTPServer({

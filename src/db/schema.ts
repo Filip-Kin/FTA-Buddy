@@ -73,18 +73,18 @@ export const MatchLog = typeof matchLogs.$inferInsert;
 export const cycleLogs = pgTable('cycle_logs', { 
     id: uuid('id').primaryKey(),
     event: varchar('event').notNull(),
-    event_id: uuid('event_id').notNull(),
     match_number: integer('match_number').notNull(),
     play_number: integer('play_number').notNull(),
     level: levelEnum('level').notNull(),
-    start_time: timestamp('start_time').notNull(),
+    prestart_time: timestamp('prestart_time'),
+    start_time: timestamp('start_time'),
     calculated_cycle_time: varchar('calculated_cycle_time'),
     ref_done_time: timestamp('ref_done_time'),
-    green_light_time: timestamp('green_light_time'),
-    commit_time: timestamp('commit_time')
+    scores_posted_time: timestamp('scores_posted_time'),
+    end_time: timestamp('end_time')
 });
 
-export const CycleLog = typeof cycleLogs.$inferInsert;
+export const CycleLog = typeof cycleLogs.$inferSelect;
 
 export const logPublishing = pgTable('log_publishing', {
     id: uuid('id').primaryKey(),

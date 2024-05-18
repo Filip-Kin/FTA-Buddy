@@ -1,4 +1,4 @@
-import { DSState, EnableState, FieldState, MonitorFrame, TeamInfo } from "@shared/types";
+import { DSState, EnableState, FieldState, PartialMonitorFrame, PartialTeamInfo } from "@shared/types";
 import { trpc } from "./trpc";
 
 console.log('Injection loaded');
@@ -15,7 +15,7 @@ function read(station: string) {
     const rioElm = document.getElementById(station + 'robot');
     const enabledElm = document.getElementById(station + 'enabled');
 
-    const obj: TeamInfo = {
+    const obj: PartialTeamInfo = {
         number: parseInt(document.getElementById(station + 'Number')?.innerText || '0'),
         ds: identifyStatusDS(station),
         radio: radioElm?.classList.contains('fieldMonitor-greenCircle') ?? false,
@@ -88,7 +88,7 @@ function identifyFieldStatus(elm: HTMLElement) {
 
 async function sendUpdate() {
     let elm = document.getElementById('matchStateTop');
-    let data: MonitorFrame = {
+    let data: PartialMonitorFrame = {
         frameTime: (new Date()).getTime(),
         version: version ?? '0.0.0',
         field: (elm && identifyFieldStatus(elm)) ?? FieldState.UNKNOWN,
