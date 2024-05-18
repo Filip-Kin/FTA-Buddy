@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite --host --port 5173",
-        "build": "bunx vite build",
+        "build": "vite build",
         "preview": "vite preview --port 9019",
         "check": "svelte-check --tsconfig ./tsconfig.json",
         "start": "node server.cjs"
