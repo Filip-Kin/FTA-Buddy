@@ -3,7 +3,6 @@ import { applyWSSHandler } from '@trpc/server/adapters/ws';
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
-import proxy from 'express-http-proxy';
 import { readFileSync, readdirSync } from 'fs';
 import ws from 'ws';
 import { ServerEvent, TournamentLevel } from '../shared/types';
@@ -18,6 +17,8 @@ import { cycleRouter } from './router/cycles';
 import { getTeamAverageCycle } from './util/team-cycles';
 import { and, eq } from 'drizzle-orm';
 import { cycleLogs } from './db/schema';
+import { createProxyServer } from 'http-proxy';
+import proxy from 'express-http-proxy';
 
 const port = parseInt(process.env.PORT || '3001');
 
@@ -63,8 +64,10 @@ const app = express();
 
 app.use(cors())
 
+const wsProxy = createProxyServer({ target: 'http://localhost:' + (port + 2), ws: true });
+
 app.use('/trpc', proxy('http://localhost:' + (port + 1) + '/trpc'));
-app.use('/ws', proxy('http://localhost:' + (port + 2)));
+app.use('/ws', (req, res) => wsProxy.ws(req, res, { target: 'ws://localhost:' + (port + 2) }));
 
 app.get('/serviceworker.js', async (req, res) => {
     let assets = readdirSync('./app/dist/assets');
@@ -105,8 +108,8 @@ app.get('/team-average-cycle/:team/:eventCode?', async (req, res) => {
 });
 
 connect().then(async () => {
-    app.listen(port, () => {
-        console.log(`Server listening on port ${port}`);
+    app.listen(port + 3, () => {
+        console.log(`Server listening on port ${port + 3}`);
     });
 });
 
