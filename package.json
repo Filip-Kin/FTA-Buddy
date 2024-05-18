@@ -5,7 +5,7 @@
   "scripts": {
     "start": "bun run ./src/index.ts",
     "dev": "concurrently \"set NODE_ENV=dev && nodemon ./\" \"cd app && npm run dev\" --kill-others --success first",
-    "build": "tsc; cd app; bun ci; bun run build",
+    "build": "tsc; cd app; bun ci -D; bun run build",
     "generate-migration": "drizzle-kit generate:pg",
     "migrate": "ts-node src/db/migrate"
   },
