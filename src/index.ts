@@ -19,7 +19,7 @@ import { getTeamAverageCycle } from './util/team-cycles';
 import { and, eq } from 'drizzle-orm';
 import { cycleLogs } from './db/schema';
 
-const port = parseInt(process.env.PORT || '3000');
+const port = parseInt(process.env.PORT || '3001');
 
 export const events: { [key: string]: ServerEvent; } = {};
 export const eventCodes: { [key: string]: string; } = {};
