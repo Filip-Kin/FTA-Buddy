@@ -19,6 +19,7 @@ import { and, eq } from 'drizzle-orm';
 import { cycleLogs } from './db/schema';
 import { createProxyServer } from 'http-proxy';
 import proxy from 'express-http-proxy';
+import { createServer } from 'http';
 
 const port = parseInt(process.env.PORT || '3001');
 
@@ -62,12 +63,17 @@ console.log('✅ WebSocket Server listening on ws://localhost:' + (port + 2));
 
 const app = express();
 
-app.use(cors())
+const server = createServer(app)
 
 const wsProxy = createProxyServer({ target: 'http://localhost:' + (port + 2), ws: true });
 
+server.on('upgrade', function (req, socket, head) {
+    wsProxy.ws(req, socket, head);
+});
+
+app.use(cors())
+
 app.use('/trpc', proxy('http://localhost:' + (port + 1) + '/trpc'));
-app.use('/ws', (req, res) => wsProxy.ws(req, res, { target: 'ws://localhost:' + (port + 2) }));
 
 app.get('/serviceworker.js', async (req, res) => {
     let assets = readdirSync('./app/dist/assets');
@@ -90,7 +96,6 @@ app.get('/', (req, res) => {
     res.redirect('/app/');
 });
 
-
 // Public api
 
 app.get('/cycles/:eventCode/:level/:match/:play', async (req, res) => {
@@ -107,11 +112,7 @@ app.get('/team-average-cycle/:team/:eventCode?', async (req, res) => {
     res.json(await getTeamAverageCycle(parseInt(req.params.team), req.params.eventCode?.toLowerCase()));
 });
 
-connect().then(async () => {
-    app.listen(port + 3, () => {
-        console.log(`Server listening on port ${port + 3}`);
-    });
-});
+server.listen(port);
 
 process.on('SIGTERM', () => {
     console.log('SIGTERM');
