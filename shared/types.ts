@@ -3,6 +3,8 @@ import { EventEmitter } from "events";
 export interface MonitorFrame {
     field: FieldState;
     match: number;
+    play: number;
+    level: TournamentLevel;
     time: string;
     version: string;
     frameTime: number;
@@ -233,8 +235,10 @@ export interface FMSMatch {
     teamNumberRed1: number,
     teamNumberRed2: number,
     teamNumberRed3: number,
-    tournamentLevel: "None" | "Practice" | "Qualification" | "Playoff"
+    tournamentLevel: TournamentLevel;
 }
+
+export type TournamentLevel = "None" | "Practice" | "Qualification" | "Playoff";
 
 export namespace FMSEnums {
     export enum Level {

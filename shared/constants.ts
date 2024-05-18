@@ -3,6 +3,8 @@ import { EnableState, MonitorFrame } from "./types";
 export const DEFAULT_MONITOR: MonitorFrame = {
     field: 0,
     match: 0,
+    play: 0,
+    level: 'None',
     version: '0.0.0',
     frameTime: 0,
     time: 'unk',

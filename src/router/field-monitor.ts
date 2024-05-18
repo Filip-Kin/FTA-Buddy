@@ -39,6 +39,8 @@ export const fieldMonitorRouter = router({
         eventCode: z.string().optional(),
         field: z.nativeEnum(FieldState),
         match: z.number(),
+        play: z.number(),
+        level: z.enum(['None', 'Practice', 'Qualification', 'Playoff']),
         time: z.string(),
         version: z.string(),
         frameTime: z.number(),

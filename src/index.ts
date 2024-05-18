@@ -6,8 +6,8 @@ import express from 'express';
 import proxy from 'express-http-proxy';
 import { readFileSync, readdirSync } from 'fs';
 import ws from 'ws';
-import { ServerEvent } from '../shared/types';
-import { connect } from './db/db';
+import { ServerEvent, TournamentLevel } from '../shared/types';
+import { connect, db } from './db/db';
 import { checklistRouter } from './router/checklist';
 import { eventRouter } from './router/event';
 import { fieldMonitorRouter } from './router/field-monitor';
@@ -15,6 +15,9 @@ import { matchRouter } from './router/logs';
 import { userRouter } from './router/user';
 import { createContext, router } from './trpc';
 import { cycleRouter } from './router/cycles';
+import { getTeamAverageCycle } from './util/team-cycles';
+import { and, eq } from 'drizzle-orm';
+import { cycleLogs } from './db/schema';
 
 const port = parseInt(process.env.PORT || '3000');
 
@@ -30,6 +33,8 @@ const appRouter = router({
     field: fieldMonitorRouter,
     cycles: cycleRouter
 });
+
+export type AppRouter = typeof appRouter;
 
 createHTTPServer({
     router: appRouter,
@@ -53,8 +58,6 @@ wss.on('connection', (ws) => {
     });
 });
 console.log('✅ WebSocket Server listening on ws://localhost:' + (port + 2));
-
-export type AppRouter = typeof appRouter;
 
 const app = express();
 
@@ -82,6 +85,23 @@ if (process.env.NODE_ENV === 'dev') {
 
 app.get('/', (req, res) => {
     res.redirect('/app/');
+});
+
+
+// Public api
+
+app.get('/cycles/:eventCode/:level/:match/:play', async (req, res) => {
+    if (!['None', 'Practice', 'Qualification', 'Playoff'].includes(req.params.level)) return res.status(400).send('Invalid level');
+
+    res.json(await db.query.cycleLogs.findFirst({ where: and(eq(cycleLogs.event, req.params.eventCode.toLowerCase()), eq(cycleLogs.match_number, parseInt(req.params.match)), eq(cycleLogs.play_number, parseInt(req.params.play)), eq(cycleLogs.level, req.params.level as TournamentLevel)) }));
+});
+
+app.get('/cycles/:eventCode', async (req, res) => {
+    res.json(await db.query.cycleLogs.findMany({ where: eq(cycleLogs.event, req.params.eventCode.toLowerCase()) }));
+});
+
+app.get('/team-average-cycle/:team/:eventCode?', async (req, res) => {
+    res.json(await getTeamAverageCycle(parseInt(req.params.team), req.params.eventCode?.toLowerCase()));
 });
 
 connect().then(async () => {

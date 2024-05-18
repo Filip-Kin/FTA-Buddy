@@ -101,4 +101,26 @@ export const logPublishing = pgTable('log_publishing', {
     expire_time: timestamp('expire_time').notNull()
 });
 
+export const teamCycleLogs = pgTable('team_cycle_logs', {
+    id: uuid('id').primaryKey(),
+    event: varchar('event').notNull(),
+    match_number: integer('match_number').notNull(),
+    play_number: integer('play_number').notNull(),
+    level: levelEnum('level').notNull(),
+    team: integer('team').notNull(),
+    prestart: timestamp('prestart'),
+    first_ds: timestamp('first_ds'),
+    last_ds: timestamp('last_ds'),
+    time_ds: integer('time_ds'),
+    first_radio: timestamp('first_radio'),
+    last_radio: timestamp('last_radio'),
+    time_radio: integer('time_radio'),
+    first_rio: timestamp('first_rio'),
+    last_rio: timestamp('last_rio'),
+    time_rio: integer('time_rio'),
+    first_code: timestamp('first_code'),
+    last_code: timestamp('last_code'),
+    time_code: integer('time_code'),
+});
+
 export default { events, users, messages, matchLogs, cycleLogs, logPublishing };

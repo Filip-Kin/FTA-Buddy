@@ -1,5 +1,5 @@
 import { SignalR } from "./signalR";
-import { getCurrentMatch, getEventCode } from "./fmsapi";
+import { getCurrentMatch, getEventCode, getTeamNumbers } from "./fmsapi";
 import { trpc, updateValues } from "./trpc";
 const manifestData = chrome.runtime.getManifest();
 export const FMS = '192.168.1.220'
@@ -40,11 +40,14 @@ async function start() {
             });
         } else if (msg.type === "getEventCode") {
             getEventCode().then((code) => {
-                sendResponse({
-                    source: 'ext',
-                    version: manifestData.version,
-                    type: "eventCode",
-                    code
+                getTeamNumbers().then((teams) => {
+                    sendResponse({
+                        source: 'ext',
+                        version: manifestData.version,
+                        type: "eventCode",
+                        code,
+                        teams
+                    });
                 });
             });
         }

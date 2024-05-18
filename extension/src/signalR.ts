@@ -273,6 +273,10 @@ export class SignalR {
         this.infrastructureConnection.on('matchstatusinfochanged', (data) => {
             console.log('matchstatusinfochanged: ', data);
             if (data.MatchState === 'WaitingForMatchPreview') {
+                this.frame.match = data.MatchNumber;
+                this.frame.play = data.PlayNumber;
+                this.frame.level = data.Level;
+
                 this.cycleTimeCallback('prestart', '');
             } else if (data.MatchState === 'MatchAuto') {
                 this.cycleTimeCallback('start', '');
@@ -285,6 +289,7 @@ export class SignalR {
 
         this.infrastructureConnection.on('matchstatuschanged', (data) => {
             console.log('matchstatuschanged: ', data);
+
         });
 
         // BackupPerformed_Incremental when score committed
