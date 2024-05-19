@@ -92,10 +92,6 @@ if (process.env.NODE_ENV === 'dev') {
     app.use('/FieldMonitor', express.static('app/dist/FieldMonitor'));
 }
 
-app.get('/', (req, res) => {
-    res.redirect('/app/');
-});
-
 // Public api
 
 app.get('/cycles/:eventCode/:level/:match/:play', async (req, res) => {
@@ -112,7 +108,11 @@ app.get('/team-average-cycle/:team/:eventCode?', async (req, res) => {
     res.json(await getTeamAverageCycle(parseInt(req.params.team), req.params.eventCode?.toLowerCase()));
 });
 
-server.listen(port);
+app.get('/', (req, res) => {
+    res.redirect('/app/');
+});
+
+connect().then(() => server.listen(port));
 
 process.on('SIGTERM', () => {
     console.log('SIGTERM');
