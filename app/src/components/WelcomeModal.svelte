@@ -12,10 +12,10 @@
     onMount(() => {
         step = 0;
         gestureEvents.addEventListener("swipeLeft", () => {
-            if (step <= 5) step++
+            if (step < 5) step++
         });
         gestureEvents.addEventListener("swipeRight", () => {
-            if (step >= 0) step--
+            if (step > 0) step--
         });
     });
 
