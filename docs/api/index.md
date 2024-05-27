@@ -86,7 +86,8 @@ Get the cycle time information for a given event.
         "end_time": "2024-05-18T06:28:20.737Z"
 	},
     ...
-]```
+]
+```
 
 ### `GET /cycles/:eventCode/:level/:match/:play`
 
@@ -114,7 +115,8 @@ Get the cycle time information for a given match.
 	"ref_done_time": "2024-05-18T06:28:20.700Z",
 	"scores_posted_time": "2024-05-18T06:29:03.339Z",
 	"end_time": "2024-05-18T06:28:20.737Z"
-}```
+}
+```
 
 ### `GET /team-average-cycle/:team/:eventCode?`
 
@@ -131,4 +133,5 @@ Get the average cycle time for a given team (optionally filtered to a specific e
 	"radio": 55000,
 	"rio": 67000,
 	"code": 69000
-}```
+}
+```
