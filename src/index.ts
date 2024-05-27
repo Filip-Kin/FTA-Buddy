@@ -196,8 +196,10 @@ app.get('/docs/*', async (req, res) => {
             <link rel="stylesheet" href="/docs.css">
             <link rel="stylesheet" href="/hljs.css">
         </head>
-        <body class="markdown-body" style="margin: 1rem auto; max-width: 1024px;">
-            ${html}
+        <body style="margin: 1rem;">
+            <div class="markdown-body" style="margin: 0 auto; max-width: 1024px;">
+                ${html}
+            </div>
         </body>
     </html>
     `);
