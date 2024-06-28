@@ -55,8 +55,13 @@
 
     frameHandler.addEventListener("match-start", (evt) => {
         currentCycleIsBest = false;
-        lastCycleTime = formatTimeShortNoAgo(matchStartTime);
-        lastCycleTimeMS = new Date().getTime() - matchStartTime.getTime();
+        const calculatedCycleTime = frameHandler.getLastCycleTime();
+        if (!calculatedCycleTime) {
+            lastCycleTime = formatTimeShortNoAgo(matchStartTime);
+            lastCycleTimeMS = new Date().getTime() - matchStartTime.getTime();
+        } else {
+            lastCycleTime = formatTimeShortNoAgo(new Date(calculatedCycleTime));
+        }
         if (lastCycleTimeMS < bestCycleTimeMS) {
             bestCycleTimeMS = lastCycleTimeMS;
             currentCycleIsBest = true;
