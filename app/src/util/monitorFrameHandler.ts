@@ -160,6 +160,7 @@ export class MonitorFrameHandler extends EventTarget {
     public getLastCycleTime() {
         const thisFrame = this.getFrame();
         const lastCycleTime = thisFrame?.lastCycleTime;
+        console.log(lastCycleTime);
         if (lastCycleTime) {
             return cycleTimeToMS(lastCycleTime);
         } else {

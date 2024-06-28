@@ -3,7 +3,7 @@
     import { Table, TableBody, TableHead, TableHeadCell } from "flowbite-svelte";
     import MonitorRow from "../components/MonitorRow.svelte";
     import TeamModal from "../components/TeamModal.svelte";
-    import { formatTimeShortNoAgo } from "../util/formatTime";
+    import { formatTimeShortNoAgo, formatTimeShortNoAgoSeconds } from "../util/formatTime";
     import type { MonitorEvent, MonitorFrameHandler } from "../util/monitorFrameHandler";
     import { onMount } from "svelte";
     import { trpc } from "../main";
@@ -60,7 +60,7 @@
             lastCycleTime = formatTimeShortNoAgo(matchStartTime);
             lastCycleTimeMS = new Date().getTime() - matchStartTime.getTime();
         } else {
-            lastCycleTime = formatTimeShortNoAgo(new Date(calculatedCycleTime));
+            lastCycleTime = formatTimeShortNoAgoSeconds(calculatedCycleTime);
         }
         if (lastCycleTimeMS < bestCycleTimeMS) {
             bestCycleTimeMS = lastCycleTimeMS;
