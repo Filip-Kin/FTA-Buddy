@@ -53,10 +53,11 @@
         console.log(averageCycleTimeMS);
     });
 
-    frameHandler.addEventListener("match-start", (evt) => {
+    frameHandler.addEventListener("match-start", async (evt) => {
         currentCycleIsBest = false;
         const calculatedCycleTime = frameHandler.getLastCycleTime();
-        if (!calculatedCycleTime) {
+        // Doesn't always update quick enough
+        if (!calculatedCycleTime || calculatedCycleTime === lastCycleTimeMS) {
             lastCycleTime = formatTimeShortNoAgo(matchStartTime);
             lastCycleTimeMS = new Date().getTime() - matchStartTime.getTime();
         } else {
@@ -71,10 +72,11 @@
 
     setInterval(() => {
         const currentTime = new Date().getTime() - matchStartTime.getTime();
+        console.log(averageCycleTimeMS);
         if (currentTime < averageCycleTimeMS) {
             currentCycleTimeRedness = 0;
         } else {
-            currentCycleTimeRedness = Math.min(1, (currentTime - averageCycleTimeMS) / (averageCycleTimeMS));
+            currentCycleTimeRedness = Math.min(1, (currentTime - averageCycleTimeMS) / 120);
         }
 
         currentCycleTime = formatTimeShortNoAgo(matchStartTime);
