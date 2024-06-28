@@ -1,5 +1,5 @@
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { DSState, EnableState, FMSEnums, FieldState, PartialMonitorFrame, ROBOT, type SignalRMonitorFrame } from '@shared/types';
+import { DSState, EnableState, FMSEnums, FieldState, MatchState, PartialMonitorFrame, ROBOT, type SignalRMonitorFrame } from '@shared/types';
 import { DEFAULT_MONITOR } from '@shared/constants';
 import { uploadMatchLogs } from './trpc';
 
@@ -27,6 +27,7 @@ export class SignalR {
     public async start() {
         console.log('Starting SignalR');
         // Build a connection to the SignalR Hub
+        console.log(`http://${this.ip}/fieldMonitorHub`);
         this.connection = new HubConnectionBuilder()
             .withUrl(`http://${this.ip}/fieldMonitorHub`)
             .withServerTimeout(30000) // 30 seconds, per FMS Audience Display
@@ -364,10 +365,10 @@ export class SignalR {
 
     private dsState(data: SignalRMonitorFrame): DSState {
         if (data.IsBypassed) return DSState.BYPASS;
-        if (data.IsEStopPressed) return DSState.ESTOP;
-        if (data.IsAStopPressed) return DSState.ASTOP;
+        if (data.IsEStopped) return DSState.ESTOP;
+        if (data.IsAStopped && this.frame.field == FieldState.MATCH_RUNNING_AUTO) return DSState.ASTOP;
         if (data.Connection) {
-            if (data.StationStatus === FMSEnums.StationStatusType.Good) return DSState.GREEN;
+            if (data.DSLinkActive) return DSState.GREEN;
             if (data.StationStatus === FMSEnums.StationStatusType.WrongStation) return DSState.MOVE_STATION;
             if (data.StationStatus === FMSEnums.StationStatusType.WrongMatch) return DSState.WAITING;
             return DSState.GREEN_X;
