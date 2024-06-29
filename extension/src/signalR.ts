@@ -231,10 +231,10 @@ export class SignalR {
             }
             */
 
-            const team: ROBOT = (((data.p1 === FMSEnums.AllianceType.Red) ? 'red' : 'blue') + data.p2) as ROBOT;
+            //const team: ROBOT = (((data.p1 === FMSEnums.AllianceType.Red) ? 'red' : 'blue') + data.p2) as ROBOT;
 
-            if (data.p3) this.frame[team].versionmm = data.p3.length > 0;
-            else this.frame[team].versionmm = false;
+            // if (data.p3) this.frame[team].versionmm = data.p3.length > 0;
+            // else this.frame[team].versionmm = false;
         });
 
         // Any settings changed in FMS
@@ -421,9 +421,10 @@ export class SignalR {
         if (data.IsEStopped) return DSState.ESTOP;
         if (data.IsAStopped && this.frame.field == FieldState.MATCH_RUNNING_AUTO) return DSState.ASTOP;
         if (data.Connection) {
+            console.log(data.StationStatus);
             if (data.DSLinkActive) return DSState.GREEN;
-            if (data.StationStatus === FMSEnums.StationStatusType.WrongStation) return DSState.MOVE_STATION;
-            if (data.StationStatus === FMSEnums.StationStatusType.WrongMatch) return DSState.WAITING;
+            if (data.StationStatus === 'WrongStation') return DSState.MOVE_STATION;
+            if (data.StationStatus === 'Waiting') return DSState.WAITING;
             return DSState.GREEN_X;
         }
 
